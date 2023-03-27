@@ -38,4 +38,4 @@ jobs:
       run: |
         docker build -t saikrishna .
         docker tag saikrishna:latest public.ecr.aws/v9w6w1e9/saikrishna:latest
-        docker push public.ecr.aws/v9w6w1e9/saikrishna
+        docker push public.ecr.aws/v9w6w1e9/saikrishna:latest
