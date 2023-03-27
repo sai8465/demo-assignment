@@ -37,5 +37,5 @@ jobs:
         IMAGE_TAG: latest
       run: |
         docker build -t saikrishna .
-        docker tag saikrishna:latest public.ecr.aws/v9w6w1e9/saikrishna:latest
-        docker push public.ecr.aws/v9w6w1e9/saikrishna:latest
+        docker tag saikrishna:latest 049615011903 public.ecr.aws/v9w6w1e9/saikrishna:latest
+        docker push 049615011903 public.ecr.aws/v9w6w1e9/saikrishna:latest
