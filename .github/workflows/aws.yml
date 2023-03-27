@@ -32,11 +32,11 @@ jobs:
 
     - name: Build, tag, and push image to Amazon ECR
       env: 
-        ECR_REGISTRY: public.ecr.aws/v9w6w1e9/
+        ECR_REGISTRY: public.ecr.aws/v9w6w1e9/saikrishna
         ECR_REPOSITORY: saikrishna
         IMAGE_TAG: latest
       run: |
         docker build -t saikrishna .
         docker tag saikrishna:latest public.ecr.aws/v9w6w1e9/saikrishna:latest
-        docker ps
+        docker ps -a
         docker push public.ecr.aws/v9w6w1e9/saikrishna:latest
