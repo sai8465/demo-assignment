@@ -34,8 +34,8 @@ jobs:
       env: 
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: saikrishna
-        IMAGE_TAG: v2
+        IMAGE_TAG: latest
       run: |
         docker build -t saikrishna .
         docker tag saikrishna:latest public.ecr.aws/v9w6w1e9/saikrishna:latest
-        docker push public.ecr.aws/v9w6w1e9/saikrishna:v2
+        docker push public.ecr.aws/v9w6w1e9/saikrishna
