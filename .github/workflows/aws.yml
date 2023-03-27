@@ -36,6 +36,7 @@ jobs:
         ECR_REPOSITORY: saikrishna
         IMAGE_TAG: latest
       run: |
+        aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/v9w6w1e9
         docker build -t saikrishna .
         docker tag saikrishna:latest public.ecr.aws/v9w6w1e9/saikrishna:latest
         docker ps -a
