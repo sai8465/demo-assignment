@@ -1,0 +1,82 @@
+# Provider configuration for AWS
+provider "aws" {
+  region = "us-east-2" # Replace with the desired AWS region
+}
+
+# Create ECR repository
+resource "aws_ecr_repository" "my_ecr_repo" {
+  name = "demo-ecr" # Replace with desired repository name
+}
+
+# Github Actions workflow for ECS deployment
+resource "github_actions_workflow" "ecs_deploy" {
+  name = "ECS Deploy"
+  on = "push"
+  resolves = ["deploy"]
+}
+
+# Github Actions job for ECS deployment
+resource "github_actions_job" "deploy" {
+  name = "Deploy to ECS"
+  runs_on = "ubuntu-latest"
+
+  # Checkout code from the Github repository
+  steps {
+    name = "Checkout"
+    uses = "actions/checkout@v2"
+  }
+
+  # Login to ECR
+  steps {
+    name = "Login to ECR"
+    uses = "aws-actions/amazon-ecr-login@v1"
+    with {
+      registry = "049615011903.dkr.ecr.us-east-2.amazonaws.com"
+      # Replace AWS_ACCOUNT_ID and REGION with the desired values
+    }
+  }
+
+  # Build and push Docker image to ECR
+  steps {
+    name = "Build and Push to ECR"
+    run = |
+      docker build -t demo-ecr .
+      docker tag demo-ecr:latest 049615011903.dkr.ecr.us-east-2.amazonaws.com/demo-ecr:latest
+      docker push 049615011903.dkr.ecr.REGION.amazonaws.com/demo-ecr:latest
+    env = {
+      AWS_ACCOUNT_ID = "049615011903"
+      REGION = "us-east-2"
+    }
+  }
+
+  # Update ECS task definition with the new image
+  steps {
+    name = "Update Task Definition"
+    uses = "aws-actions/amazon-ecs-task-definition@v1"
+    with {
+      task_definition = "my-task" # Replace with desired task definition name
+      container_name = "demo" # Replace with desired container name
+      image = "AWS_ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/demo-ecr:latest"
+      # Replace AWS_ACCOUNT_ID and REGION with the desired values
+    }
+    env = {
+      AWS_ACCOUNT_ID = "049615011903"
+      REGION = "us-east-2"
+    }
+  }
+
+  # Update ECS service with the new task definition
+  steps {
+    name = "Update Service"
+    uses = "aws-actions/amazon-ecs-service@v1"
+    with {
+      service = "demo-service" # Replace with desired service name
+      cluster = "demo-cluster" # Replace with desired cluster name
+      task_definition = "my-task-definition" # Replace with desired task definition name
+    }
+    env = {
+      AWS_ACCOUNT_ID = "049615011903"
+      REGION = "us-east-2"
+    }
+  }
+}
